@@ -1,0 +1,34 @@
+[
+    {
+        "bssid":"00:01:02:03:04:05",
+        "ssid":"ChinaNet-26D3",
+        "channel":11,
+        "rssi":-76,
+        "authmode":"AUTH_WPA2_PSK",
+        "is_hidden":0,
+        "freq_offset":null,
+        "freqcal_val":null,
+        "esp_mesh_ie":null,
+        "pairwise_cipher":null,
+        "group_cipher":null,
+        "phy_type":"n",
+        "wps":1,
+        "reserved":null
+    },
+    {
+        "bssid":"00:01:02:03:04:05",
+        "ssid":"ChinaNet-26D3",
+        "channel":11,
+        "rssi":-76,
+        "authmode":"AUTH_WPA2_PSK",
+        "is_hidden":0,
+        "freq_offset":null,
+        "freqcal_val":null,
+        "esp_mesh_ie":null,
+        "pairwise_cipher":null,
+        "group_cipher":null,
+        "phy_type":"n",
+        "wps":1,
+        "reserved":null
+    }
+]
