@@ -10,6 +10,7 @@
 
 <script>
 import util from 'src/util/util.js'
+import timezonedata from 'static/js/timezonedata.js'
 
 export default {
     name: 'timearea',

@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import home from '@/view/home' //首页路由
 import info from '@/view/info'
 import infoen from '@/view/infoen'
+import searchtimezone from '@/view/searchtimezone'
 
 Vue.use(Router)
 
@@ -21,6 +22,11 @@ export default new Router({
             path: '/infoen',
             name: 'infoen',
             component: infoen
+        },
+        {
+            path: '/searchtimezone',
+            name: 'searchtimezone',
+            component: searchtimezone
         }
     ]
 })

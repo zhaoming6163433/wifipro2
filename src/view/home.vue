@@ -46,8 +46,6 @@
     <datepicker  ref="datepicker2" @parentfn2="parentfn2"></datepicker>
     <!--wifi列表-->
     <wifilist ref="wifilist" @showifinfo="showifinfo"></wifilist>
-    <!--时区列表-->
-    <timearea ref="timearea" @showtimearea="showtimearea"></timearea>
   </div>
 </template>
 
@@ -55,7 +53,6 @@
 import util from 'src/util/util.js'
 import datepicker from 'src/components/datepicker'
 import wifilist from 'src/components/wifilist'
-import timearea from 'src/components/timearea'
 import Languageset from 'static/js/Languageset.js'
 import { get_wifi_save } from 'src/model/api.js'
 
@@ -66,13 +63,15 @@ export default {
         return {
             homelanguageset:Languageset.Chineseset,//中文
             timeareatext:"",//时区
-            showxialing:false,//是否展示夏令时
-            chinaxia:{start:"05-01",end:"09-30"},//中国夏时令
+            showxialing:true,//是否展示夏令时
             americaxia:{start:"03-11",end:"11-04"},//美国夏时令
+            inteladdress:{},//返还的时区
             info: {
                 intelname: "",
                 intelpass: "",
-                dst:true,
+                Timezone:"",
+                Sp:"",
+                dst:false,
                 xialing1:new Date().Format("MM-dd"),
                 xialing2:new Date().Format("MM-dd"),
                 sheshidutext: "℃"
@@ -115,13 +114,23 @@ export default {
     },
     components: {
         datepicker,
-        wifilist,
-        timearea
+        wifilist
     },
     watch:{
         "info.dst"(value){
             if(value){
                 this.updatexiatime();
+            }
+        },
+        "inteladdress"(item){
+            if(item.Country=="US"){
+                this.info.dst = true;
+                this.info.xialing1 = this.americaxia.start;
+                this.info.xialing2 = this.americaxia.end;
+            }else{
+                this.info.dst = false;
+                this.info.xialing1 = new Date().Format("MM-dd");
+                this.info.xialing2 = new Date().Format("MM-dd");
             }
         }
     },
@@ -129,7 +138,22 @@ export default {
 
     },
     activated(){
+        if(this.$route.params.inteladdress){
+            this.inteladdress = this.$route.params.inteladdress;
+            if(this.languagetext=="英文"||this.languagetext=="English"){
+                this.timeareatext = this.inteladdress.TimeZoneE;
+            }else{
+                this.timeareatext = this.inteladdress.TimeZoneC;
+            }
 
+            let utcarr = this.inteladdress.UTCO.substr(1).split(":");
+            let dstarr = this.inteladdress.UTCDST.substr(1).split(":");
+            let utc = parseInt(utcarr[0])+parseInt(utcarr[1])/60;
+            let dst = parseInt(dstarr[0])+parseInt(dstarr[1])/60;
+            this.info.Timezone = utc*3600
+            this.info.Sp = (dst-utc)*3600
+
+        }
     },
     methods: {
         async wifi_save(params) {
@@ -145,13 +169,15 @@ export default {
             }
             let param = {
                 ssid :this.info.intelname,
-                password:this.intelpass,
+                password:this.info.intelpass,
                 tempunit:sheshidu,
-                dst:this.showxialing,
+                dst:this.info.dst,
                 dst_sm:xialing1arr[0],
                 dst_sd:xialing1arr[1],
                 dst_em:xialing2arr[0],
-                dst_ed:xialing2arr[1]
+                dst_ed:xialing2arr[1],
+                Timezone:this.info.Timezone,
+                Sp:this.info.Sp
             }
             try{
                 let res = await get_wifi_save(param);
@@ -170,11 +196,7 @@ export default {
         },
         //选择时区
         seltimearea(){
-            this.$refs["timearea"].showlist(this.languagetext);
-        },
-        //展示时区
-        showtimearea(val){
-            this.timeareatext = val.name;
+            this.$router.push({name:'searchtimezone',query:{language:this.languagetext}});
         },
         //提交参数
         saveInfo(){
@@ -192,6 +214,10 @@ export default {
                     util.toastinfo(Languageset.Englishset.tip3);
                     return;
                 }
+                if(this.timeareatext==""){
+                    util.toastinfo(Languageset.Englishset.tip7);
+                    return;
+                }
                 if(util.ishastesu(pass)){
                     util.toastinfo(Languageset.Englishset.tip4);
                     return;
@@ -203,6 +229,10 @@ export default {
                 }
                 if(pass==""){
                     util.toastinfo(Languageset.Chineseset.tip2);
+                    return;
+                }
+                if(this.timeareatext==""){
+                    util.toastinfo(Languageset.Chineseset.tip7);
                     return;
                 }
                 if(pass.length<8){
@@ -230,10 +260,12 @@ export default {
         },
         //修改夏时令时间根据地区
         updatexiatime(){
-            this.info.xialing1 = this.americaxia.start;
-            this.info.xialing2 = this.americaxia.end;
-            this.$refs["datepicker1"].assgindate(this.americaxia.start);
-            this.$refs["datepicker2"].assgindate(this.americaxia.end);
+            if(this.inteladdress.country == "US"){
+                this.info.xialing1 = this.americaxia.start;
+                this.info.xialing2 = this.americaxia.end;
+                this.$refs["datepicker1"].assgindate(this.americaxia.start);
+                this.$refs["datepicker2"].assgindate(this.americaxia.end);
+            }
         },
         //修改语言
         changelang(val) {

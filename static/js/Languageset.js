@@ -28,6 +28,7 @@ let Chineseset ={
     tip4:"密码存在特殊字符",
     tip5:"国家不能为空",
     tip6:"所在地区不能为空",
+    tip7:"请选择时区",
     errinfo:"保存失败",
     sucinfo:"保存成功",
     timeareatext:"选择时区",
@@ -62,6 +63,7 @@ let Englishset = {
     tip4:"There are special characters in the password",
     tip5:"The state cannot be empty",
     tip6:"The area cannot be empty",
+    tip7:"Please select time zone",
     errinfo:"Save failed",
     sucinfo:"Save success",
     timeareatext:"GMT"
