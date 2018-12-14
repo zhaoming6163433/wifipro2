@@ -16,7 +16,7 @@ switch (process.env.srconfig) {
 		urlWebHttp = 'http://192.168.1.210';
 		break;
 	default://默认开发
-		urlWebHttp = 'http://www.todaypocket.cn/wifiprotime';
+		urlWebHttp = 'http://www.todaypocket.cn/wifipro';
 		break;
 }
 
